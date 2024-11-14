@@ -20,7 +20,7 @@ fn main() {
     });
 
     // Generate report
-    let output_path = Path::new("C:\\Users\\antho\\OneDrive\\Documents\\LanguageLove\\Newfolder\\New folder\\report.html");
-    ReportGenerator::generate(&file_scanner, output_path);
-    println!("Report generated: {:?}", output_path);
+    // output_path = "path/idk/directory"
+    //ReportGenerator::generate(&file_scanner, output_path);
+    //println!("Report generated: {:?}", output_path);
 }
