@@ -1,0 +1,12 @@
+[package]
+name = "ferret"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = "4.0"
+sha2 = "0.10"
+rayon = "1.5"
+regex = "1.5"
+walkdir = "2.3" 
+async-std = "1.10"
