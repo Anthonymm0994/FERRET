@@ -37,7 +37,11 @@ impl FerretPlatform {
         } else {
             // Fallback to ripgrep integration
             let integration = crate::search::engine::RipgrepIntegration;
-            integration.search_with_ripgrep(query, path)
+            let mut results = integration.search_with_ripgrep(query, path).await?;
+            
+            // Apply limit
+            results.truncate(limit);
+            Ok(results)
         }
     }
     

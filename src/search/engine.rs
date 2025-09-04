@@ -9,6 +9,7 @@ use anyhow::Result;
 // };
 use grep_regex::RegexMatcher;
 use ignore::WalkBuilder;
+use crate::extraction::document::DocumentExtractor;
 
 pub struct RipgrepSearchEngine {
     index_path: std::path::PathBuf,
@@ -17,11 +18,12 @@ pub struct RipgrepSearchEngine {
 pub struct RipgrepIntegration;
 
 impl RipgrepIntegration {
-    pub fn search_with_ripgrep(&self, pattern: &str, path: &Path) -> Result<Vec<SearchResult>> {
+    pub async fn search_with_ripgrep(&self, pattern: &str, path: &Path) -> Result<Vec<SearchResult>> {
         use grep_searcher::SearcherBuilder;
         use grep_searcher::sinks::UTF8;
         
         let matcher = RegexMatcher::new(pattern)?;
+        let extractor = DocumentExtractor::new();
         let mut file_results: std::collections::HashMap<PathBuf, Vec<(u64, String)>> = std::collections::HashMap::new();
         
         // First pass: collect all matches per file
@@ -32,76 +34,110 @@ impl RipgrepIntegration {
             }
             
             let file_path = entry.path();
-            let mut searcher = SearcherBuilder::new().build();
+            let file_extension = file_path.extension()
+                .and_then(|s| s.to_str())
+                .unwrap_or("")
+                .to_lowercase();
             
-            searcher.search_path(
-                &matcher,
-                file_path,
-                UTF8(|line_num, line| {
-                    file_results.entry(file_path.to_path_buf())
-                        .or_insert_with(Vec::new)
-                        .push((line_num as u64, line.to_string()));
-                    Ok(true)
-                })
-            )?;
+            // For document files, extract content first
+            if matches!(file_extension.as_str(), "pdf" | "docx" | "xlsx" | "pptx") {
+                match extractor.extract_content(file_path).await {
+                    Ok(content) => {
+                        // Search in extracted content
+                        let lines: Vec<&str> = content.lines().collect();
+                        for (line_num, line) in lines.iter().enumerate() {
+                            if line.to_lowercase().contains(&pattern.to_lowercase()) {
+                                file_results.entry(file_path.to_path_buf())
+                                    .or_insert_with(Vec::new)
+                                    .push((line_num as u64 + 1, line.to_string()));
+                            }
+                        }
+                    }
+                    Err(e) => {
+                        log::warn!("Failed to extract content from {}: {}", file_path.display(), e);
+                        continue;
+                    }
+                }
+            } else {
+                // For text files, use ripgrep directly
+                let mut searcher = SearcherBuilder::new().build();
+                
+                // Only search text files, skip binary files
+                if let Ok(content) = std::fs::read_to_string(file_path) {
+                    let lines: Vec<&str> = content.lines().collect();
+                    for (line_num, line) in lines.iter().enumerate() {
+                        if line.to_lowercase().contains(&pattern.to_lowercase()) {
+                            file_results.entry(file_path.to_path_buf())
+                                .or_insert_with(Vec::new)
+                                .push((line_num as u64 + 1, line.to_string()));
+                        }
+                    }
+                }
+            }
         }
         
         // Second pass: create rich search results with context
         let mut results = Vec::new();
         for (file_path, matches) in file_results {
-            if let Ok(file_content) = std::fs::read_to_string(&file_path) {
-                let lines: Vec<&str> = file_content.lines().collect();
-                let file_size = std::fs::metadata(&file_path).map(|m| m.len()).unwrap_or(0);
-                let file_type = file_path.extension()
-                    .and_then(|s| s.to_str())
-                    .unwrap_or("unknown")
-                    .to_string();
-                let match_count = matches.len();
-                
-                // Group nearby matches to avoid duplicate results
-                let mut processed_lines = std::collections::HashSet::new();
-                
-                for (line_num, line_content) in &matches {
-                    if processed_lines.contains(line_num) {
-                        continue;
-                    }
-                    
-                    // Calculate context (3 lines before and after)
-                    let context_before: Vec<String> = lines
-                        .iter()
-                        .skip((line_num.saturating_sub(4)) as usize)
-                        .take(3)
-                        .map(|s| s.to_string())
-                        .collect();
-                    
-                    let context_after: Vec<String> = lines
-                        .iter()
-                        .skip((line_num + 1) as usize)
-                        .take(3)
-                        .map(|s| s.to_string())
-                        .collect();
-                    
-                    // Calculate relevance score
-                    let score = self.calculate_relevance_score(line_content, pattern, &file_path);
-                    
-                    // Mark nearby lines as processed to avoid duplicates
-                    for i in line_num.saturating_sub(2)..=line_num + 2 {
-                        processed_lines.insert(i);
-                    }
-                    
-                    results.push(SearchResult {
-                        path: file_path.clone(),
-                        score,
-                        snippet: line_content.clone(),
-                        line_number: Some(*line_num),
-                        content: Some(line_content.clone()),
-                        context_before,
-                        context_after,
-                        match_count,
-                        file_size,
-                        file_type: file_type.clone(),
-                    });
+            let file_size = std::fs::metadata(&file_path).map(|m| m.len()).unwrap_or(0);
+            let file_type = file_path.extension()
+                .and_then(|s| s.to_str())
+                .unwrap_or("unknown")
+                .to_string();
+            let match_count = matches.len();
+            
+            // Get file content for context
+            let file_content = if matches!(file_type.as_str(), "pdf" | "docx" | "xlsx" | "pptx") {
+                extractor.extract_content(&file_path).await.unwrap_or_default()
+            } else {
+                std::fs::read_to_string(&file_path).unwrap_or_default()
+            };
+            
+            let lines: Vec<&str> = file_content.lines().collect();
+            
+            // Group nearby matches to avoid duplicate results
+            let mut processed_lines = std::collections::HashSet::new();
+            
+            for (line_num, line_content) in &matches {
+                if processed_lines.contains(line_num) {
+                    continue;
                 }
+                
+                // Calculate context (3 lines before and after)
+                let context_before: Vec<String> = lines
+                    .iter()
+                    .skip((line_num.saturating_sub(4)) as usize)
+                    .take(3)
+                    .map(|s| s.to_string())
+                    .collect();
+                
+                let context_after: Vec<String> = lines
+                    .iter()
+                    .skip((line_num + 1) as usize)
+                    .take(3)
+                    .map(|s| s.to_string())
+                    .collect();
+                
+                // Calculate relevance score
+                let score = self.calculate_relevance_score(line_content, pattern, &file_path);
+                
+                // Mark nearby lines as processed to avoid duplicates
+                for i in line_num.saturating_sub(2)..=line_num + 2 {
+                    processed_lines.insert(i);
+                }
+                
+                results.push(SearchResult {
+                    path: file_path.clone(),
+                    score,
+                    snippet: line_content.clone(),
+                    line_number: Some(*line_num),
+                    content: Some(line_content.clone()),
+                    context_before,
+                    context_after,
+                    match_count,
+                    file_size,
+                    file_type: file_type.clone(),
+                });
             }
         }
         
