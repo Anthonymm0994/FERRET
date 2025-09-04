@@ -22,73 +22,42 @@ pub struct RipgrepIntegration;
 
 impl RipgrepIntegration {
     pub fn search_with_ripgrep(&self, pattern: &str, path: &Path) -> Result<Vec<SearchResult>> {
-        use grep_searcher::{Sink, SinkMatch, Searcher};
-        use std::sync::{Arc, Mutex};
-        
-        // ripgrep handles:
-        // - .gitignore respect
-        // - Binary file detection
-        // - Parallel directory walking
-        // - Memory-mapped file reading
-        // - Unicode normalization
-        // - Hidden file handling
+        use grep_searcher::SearcherBuilder;
+        use grep_searcher::sinks::UTF8;
         
         let matcher = RegexMatcher::new(pattern)?;
-        let results = Arc::new(Mutex::new(Vec::new()));
+        let mut results = Vec::new();
         
-        WalkBuilder::new(path)
-            .threads(num_cpus::get())
-            .build_parallel()
-            .run(|| {
-                let matcher = matcher.clone();
-                let results = results.clone();
-                
-                Box::new(move |result| {
-                    let entry = match result {
-                        Ok(entry) => entry,
-                        Err(_) => return ignore::WalkState::Continue,
-                    };
-                    
-                    if entry.file_type().map_or(false, |ft| ft.is_file()) {
-                        let mut searcher = SearcherBuilder::new()
-                            .line_number(true)
-                            .build();
-                        
-                        let mut sink = SearchSink {
-                            results: results.clone(),
-                        };
-                        
-                        let _ = searcher.search_path(&matcher, entry.path(), &mut sink);
-                    }
-                    
-                    ignore::WalkState::Continue
+        for entry in WalkBuilder::new(path).build() {
+            let entry = entry?;
+            if !entry.file_type().map_or(false, |ft| ft.is_file()) {
+                continue;
+            }
+            
+            let file_path = entry.path();
+            let mut searcher = SearcherBuilder::new().build();
+            
+            // Use grep's sink with PROPER path handling
+            searcher.search_path(
+                &matcher,
+                file_path,
+                UTF8(|line_num, line| {
+                    results.push(SearchResult {
+                        path: file_path.to_path_buf(), // THIS WAS THE BUG - use actual path!
+                        line_number: Some(line_num as u64),
+                        snippet: line.to_string(),
+                        score: 1.0,
+                        content: Some(line.to_string()),
+                    });
+                    Ok(true)
                 })
-            });
+            )?;
+        }
         
-        let x = results.lock().unwrap().clone();
-        Ok(x)
+        Ok(results)
     }
 }
 
-struct SearchSink {
-    results: Arc<Mutex<Vec<SearchResult>>>,
-}
-
-impl Sink for SearchSink {
-    type Error = std::io::Error;
-    
-    fn matched(&mut self, _searcher: &Searcher, mat: &SinkMatch<'_>) -> Result<bool, Self::Error> {
-        let mut results = self.results.lock().unwrap();
-        results.push(SearchResult {
-            path: std::path::PathBuf::from("unknown"), // SinkMatch doesn't have path method
-            line_number: mat.line_number(),
-            content: Some(String::from_utf8_lossy(mat.bytes()).to_string()),
-            score: 1.0, // ripgrep doesn't provide scores, use 1.0 for exact matches
-            snippet: String::from_utf8_lossy(mat.bytes()).to_string(),
-        });
-        Ok(true)
-    }
-}
 
 impl RipgrepSearchEngine {
     pub fn new(index_path: &Path) -> Result<Self> {
