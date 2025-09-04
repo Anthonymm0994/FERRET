@@ -1,0 +1,10 @@
+C:\Users\antho\source\repos\FERRET\src-tauri\target\debug\deps\wry-864964b942c643ed.d: C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wry-0.24.11\src\lib.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wry-0.24.11\src\application.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wry-0.24.11\src\webview\mod.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wry-0.24.11\src\webview\web_context.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wry-0.24.11\src\webview\webview2\mod.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wry-0.24.11\src\webview\webview2\file_drop.rs
+
+C:\Users\antho\source\repos\FERRET\src-tauri\target\debug\deps\libwry-864964b942c643ed.rmeta: C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wry-0.24.11\src\lib.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wry-0.24.11\src\application.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wry-0.24.11\src\webview\mod.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wry-0.24.11\src\webview\web_context.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wry-0.24.11\src\webview\webview2\mod.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wry-0.24.11\src\webview\webview2\file_drop.rs
+
+C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wry-0.24.11\src\lib.rs:
+C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wry-0.24.11\src\application.rs:
+C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wry-0.24.11\src\webview\mod.rs:
+C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wry-0.24.11\src\webview\web_context.rs:
+C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wry-0.24.11\src\webview\webview2\mod.rs:
+C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wry-0.24.11\src\webview\webview2\file_drop.rs:

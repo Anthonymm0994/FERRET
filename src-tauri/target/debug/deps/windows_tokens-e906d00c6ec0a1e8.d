@@ -1,0 +1,10 @@
+C:\Users\antho\source\repos\FERRET\src-tauri\target\debug\deps\windows_tokens-e906d00c6ec0a1e8.d: C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows-tokens-0.39.0\src\lib.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows-tokens-0.39.0\src\to_tokens.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows-tokens-0.39.0\src\token_stream.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows-tokens-0.39.0\src\runtime.rs
+
+C:\Users\antho\source\repos\FERRET\src-tauri\target\debug\deps\libwindows_tokens-e906d00c6ec0a1e8.rlib: C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows-tokens-0.39.0\src\lib.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows-tokens-0.39.0\src\to_tokens.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows-tokens-0.39.0\src\token_stream.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows-tokens-0.39.0\src\runtime.rs
+
+C:\Users\antho\source\repos\FERRET\src-tauri\target\debug\deps\libwindows_tokens-e906d00c6ec0a1e8.rmeta: C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows-tokens-0.39.0\src\lib.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows-tokens-0.39.0\src\to_tokens.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows-tokens-0.39.0\src\token_stream.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows-tokens-0.39.0\src\runtime.rs
+
+C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows-tokens-0.39.0\src\lib.rs:
+C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows-tokens-0.39.0\src\to_tokens.rs:
+C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows-tokens-0.39.0\src\token_stream.rs:
+C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows-tokens-0.39.0\src\runtime.rs:

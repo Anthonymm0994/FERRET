@@ -1,0 +1,11 @@
+C:\Users\antho\source\repos\FERRET\src-tauri\target\debug\deps\os_info-fbf54cc7d6314504.d: C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\os_info-3.12.0\src\lib.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\os_info-3.12.0\src\windows\mod.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\os_info-3.12.0\src\windows\winapi.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\os_info-3.12.0\src\bitness.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\os_info-3.12.0\src\info.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\os_info-3.12.0\src\os_type.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\os_info-3.12.0\src\version.rs
+
+C:\Users\antho\source\repos\FERRET\src-tauri\target\debug\deps\libos_info-fbf54cc7d6314504.rmeta: C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\os_info-3.12.0\src\lib.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\os_info-3.12.0\src\windows\mod.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\os_info-3.12.0\src\windows\winapi.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\os_info-3.12.0\src\bitness.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\os_info-3.12.0\src\info.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\os_info-3.12.0\src\os_type.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\os_info-3.12.0\src\version.rs
+
+C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\os_info-3.12.0\src\lib.rs:
+C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\os_info-3.12.0\src\windows\mod.rs:
+C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\os_info-3.12.0\src\windows\winapi.rs:
+C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\os_info-3.12.0\src\bitness.rs:
+C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\os_info-3.12.0\src\info.rs:
+C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\os_info-3.12.0\src\os_type.rs:
+C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\os_info-3.12.0\src\version.rs:

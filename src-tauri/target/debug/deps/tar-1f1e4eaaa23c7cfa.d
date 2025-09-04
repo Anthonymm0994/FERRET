@@ -1,0 +1,12 @@
+C:\Users\antho\source\repos\FERRET\src-tauri\target\debug\deps\tar-1f1e4eaaa23c7cfa.d: C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tar-0.4.44\src\lib.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tar-0.4.44\src\archive.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tar-0.4.44\src\builder.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tar-0.4.44\src\entry.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tar-0.4.44\src\entry_type.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tar-0.4.44\src\error.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tar-0.4.44\src\header.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tar-0.4.44\src\pax.rs
+
+C:\Users\antho\source\repos\FERRET\src-tauri\target\debug\deps\libtar-1f1e4eaaa23c7cfa.rmeta: C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tar-0.4.44\src\lib.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tar-0.4.44\src\archive.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tar-0.4.44\src\builder.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tar-0.4.44\src\entry.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tar-0.4.44\src\entry_type.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tar-0.4.44\src\error.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tar-0.4.44\src\header.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tar-0.4.44\src\pax.rs
+
+C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tar-0.4.44\src\lib.rs:
+C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tar-0.4.44\src\archive.rs:
+C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tar-0.4.44\src\builder.rs:
+C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tar-0.4.44\src\entry.rs:
+C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tar-0.4.44\src\entry_type.rs:
+C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tar-0.4.44\src\error.rs:
+C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tar-0.4.44\src\header.rs:
+C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tar-0.4.44\src\pax.rs:

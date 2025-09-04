@@ -1,0 +1,10 @@
+C:\Users\antho\source\repos\FERRET\src-tauri\target\debug\deps\tauri_build-41002382a0668641.d: C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-build-1.5.6\src\lib.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-build-1.5.6\src\allowlist.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-build-1.5.6\src\static_vcruntime.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-build-1.5.6\src\window-app-manifest.xml
+
+C:\Users\antho\source\repos\FERRET\src-tauri\target\debug\deps\libtauri_build-41002382a0668641.rlib: C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-build-1.5.6\src\lib.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-build-1.5.6\src\allowlist.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-build-1.5.6\src\static_vcruntime.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-build-1.5.6\src\window-app-manifest.xml
+
+C:\Users\antho\source\repos\FERRET\src-tauri\target\debug\deps\libtauri_build-41002382a0668641.rmeta: C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-build-1.5.6\src\lib.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-build-1.5.6\src\allowlist.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-build-1.5.6\src\static_vcruntime.rs C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-build-1.5.6\src\window-app-manifest.xml
+
+C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-build-1.5.6\src\lib.rs:
+C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-build-1.5.6\src\allowlist.rs:
+C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-build-1.5.6\src\static_vcruntime.rs:
+C:\Users\antho\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-build-1.5.6\src\window-app-manifest.xml:
