@@ -1,0 +1,3 @@
+This is an exact duplicate file.
+It contains the same content as another file.
+This should be detected as a duplicate.

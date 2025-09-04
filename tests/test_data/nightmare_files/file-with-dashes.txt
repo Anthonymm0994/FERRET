@@ -1,0 +1,2 @@
+This file has dashes in its name.
+This tests filename normalization.
