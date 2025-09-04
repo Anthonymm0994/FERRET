@@ -3,6 +3,10 @@ name = "ferret"
 version = "0.1.0"
 edition = "2021"
 
+[lib]
+name = "ferret"
+path = "src/lib.rs"
+
 [dependencies]
 # Core async runtime
 tokio = { version = "1.0", features = ["full"] }
