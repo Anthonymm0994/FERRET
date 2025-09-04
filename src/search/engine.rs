@@ -7,7 +7,6 @@ use anyhow::Result;
 //     schema::{Schema, Field, STORED, TEXT},
 //     Index, IndexReader, IndexWriter, ReloadPolicy, Term,
 // };
-use grep_regex::RegexMatcher;
 use ignore::WalkBuilder;
 use crate::extraction::document::DocumentExtractor;
 
@@ -19,10 +18,6 @@ pub struct RipgrepIntegration;
 
 impl RipgrepIntegration {
     pub async fn search_with_ripgrep(&self, pattern: &str, path: &Path) -> Result<Vec<SearchResult>> {
-        use grep_searcher::SearcherBuilder;
-        use grep_searcher::sinks::UTF8;
-        
-        let matcher = RegexMatcher::new(pattern)?;
         let extractor = DocumentExtractor::new();
         let mut file_results: std::collections::HashMap<PathBuf, Vec<(u64, String)>> = std::collections::HashMap::new();
         
@@ -59,10 +54,7 @@ impl RipgrepIntegration {
                     }
                 }
             } else {
-                // For text files, use ripgrep directly
-                let mut searcher = SearcherBuilder::new().build();
-                
-                // Only search text files, skip binary files
+                // For text files, search directly
                 if let Ok(content) = std::fs::read_to_string(file_path) {
                     let lines: Vec<&str> = content.lines().collect();
                     for (line_num, line) in lines.iter().enumerate() {

@@ -4,7 +4,6 @@ use anyhow::Result;
 
 mod file_discovery;
 mod io;
-mod retry;
 mod analysis;
 mod search;
 mod extraction;
