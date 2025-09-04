@@ -2,21 +2,21 @@
 
 ## Project Overview
 
-FERRET (File Examination, Retrieval, and Redundancy Evaluation Tool) is a unified file analysis and knowledge base search platform that combines duplicate detection, file aging analysis, and powerful search capabilities into both a command-line interface and a modern desktop application built with Rust and Tauri.
+FERRET (File Examination, Retrieval, and Redundancy Evaluation Tool) is a file analysis and search tool that provides duplicate detection and content-based search functionality through a command-line interface. The project includes a desktop application framework (Tauri + React) that is currently non-functional due to build issues.
 
 ## Core Architecture
 
 ### System Components
 
-#### Dual Interface Architecture
-FERRET provides two interfaces:
-1. **Command-Line Interface (CLI)**: Direct access to all functionality via `cargo run`
-2. **Desktop Application**: Modern GUI built with Tauri + React/TypeScript
+#### Interface Architecture
+FERRET currently provides:
+1. **Command-Line Interface (CLI)**: Fully functional with all core features
+2. **Desktop Application**: Tauri + React framework exists but fails to build due to Windows ICO file requirements
 
 #### Core Platform Structure
 
 ```rust
-// Core platform structure (shared between CLI and GUI)
+// Core platform structure (CLI only - GUI non-functional)
 pub struct FerretPlatform {
     // File discovery and grouping
     file_discovery: FileDiscovery,
@@ -25,10 +25,7 @@ pub struct FerretPlatform {
     duplicate_detector: SmartDuplicateDetector,
     
     // Search engine (ripgrep-based)
-    search_engine: RipgrepSearchEngine,
-    
-    // Retry mechanism for locked files
-    retry_manager: RetryManager,
+    search_engine: Option<RipgrepSearchEngine>,
 }
 ```
 
@@ -93,17 +90,16 @@ import { open } from '@tauri-apps/api/dialog';
 
 **✅ WORKING COMPONENTS:**
 - CLI duplicate detection (SHA-256 hashing)
-- CLI search functionality (ripgrep integration with real file paths)
+- CLI search functionality (ripgrep integration with contextual results)
 - File discovery and intelligent grouping
-- Basic indexing (JSON-based)
+- JSON-based indexing
 - Error handling and graceful failures
-
-**⚠️ PARTIAL COMPONENTS:**
-- Desktop GUI (Tauri app structure complete, but build blocked by icon issue)
-- Search engine (basic functionality working, needs enhancement for full search engine features)
+- Rich search results with context and relevance scoring
 
 **❌ NOT WORKING:**
-- Tauri desktop application (build failure due to ICO format requirement)
+- Tauri desktop application (build failure due to Windows ICO file format requirements)
+- Document extraction (PDF, DOCX support exists but unused)
+- Advanced search features (persistent indexing, document content search)
 
 ## Core Project Goals & CLI Commands
 
@@ -142,14 +138,15 @@ cargo run -- search <query> <path> [--limit <number>]
 ```
 **Purpose**: Search for text content within files using ripgrep integration
 **Output**: 
-- File paths containing the query
-- Line numbers where matches occur
-- Content snippets showing matches
+- File paths with relevance scores and metadata
+- Contextual previews (3 lines before/after matches)
+- Line numbers and content snippets
+- File type, size, and match count information
 
 **Example**:
 ```bash
-cargo run -- search "test" tests/test_data --limit 10
-# Returns: List of files with matching content and line numbers
+cargo run -- search "duplicate" tests/test_data --limit 2
+# Returns: Rich search results with context and relevance scoring
 ```
 
 #### **3. Index Directory**
@@ -167,10 +164,29 @@ cargo run -- index tests/test_data --index-path ./my_index
 
 ### **Current Working Status**
 - ✅ **Duplicate Detection**: Fully functional with SHA-256 hashing
-- ✅ **Content Search**: Working with real file paths and content snippets
+- ✅ **Content Search**: Rich search with context, relevance scoring, and metadata
 - ✅ **File Discovery**: Intelligent filename grouping and normalization
-- ✅ **Basic Indexing**: JSON-based index creation
-- ⚠️ **Desktop GUI**: Structure complete but build blocked by icon issue
+- ✅ **JSON Indexing**: Basic index creation and storage
+- ❌ **Desktop GUI**: Non-functional due to Windows ICO build requirements
+
+## Technical Debt and Limitations
+
+### **Compiler Warnings**
+- 18 compiler warnings for unused code and dependencies
+- Unused components: NetworkAwareIO, RetryManager, DocumentExtractor, ArchiveProcessor, ToolIntegrations
+- Partially implemented features that are not integrated
+
+### **Missing Features**
+- Document content extraction (PDF, DOCX, XLSX) - code exists but unused
+- Persistent search indexing for performance
+- Advanced search operators and filters
+- Network file system support
+- Archive file processing
+
+### **Build Issues**
+- Tauri desktop application cannot build on Windows due to ICO file format requirements
+- Multiple attempts to create valid ICO files have failed
+- Desktop GUI framework exists but is non-functional
 
 pub struct FileAnalyzer {
     duplicate_detector: SmartDuplicateDetector,
