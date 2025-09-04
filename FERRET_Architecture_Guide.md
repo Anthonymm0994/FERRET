@@ -89,9 +89,88 @@ import { open } from '@tauri-apps/api/dialog';
 7. **Index Management**: JSON-based indexing system
 8. **Error Handling**: Comprehensive error management and graceful failures
 
-### 🔄 Current Implementation
+### 🔄 Current Implementation Status
 
-The system is **fully functional** with both CLI and desktop interfaces working correctly.
+**✅ WORKING COMPONENTS:**
+- CLI duplicate detection (SHA-256 hashing)
+- CLI search functionality (ripgrep integration with real file paths)
+- File discovery and intelligent grouping
+- Basic indexing (JSON-based)
+- Error handling and graceful failures
+
+**⚠️ PARTIAL COMPONENTS:**
+- Desktop GUI (Tauri app structure complete, but build blocked by icon issue)
+- Search engine (basic functionality working, needs enhancement for full search engine features)
+
+**❌ NOT WORKING:**
+- Tauri desktop application (build failure due to ICO format requirement)
+
+## Core Project Goals & CLI Commands
+
+### **Primary Purpose**
+FERRET is designed to **analyze and search file systems** for:
+1. **Duplicate File Detection** - Identify exact duplicate files to help clean up storage
+2. **File System Analysis** - Generate reports on file organization and usage
+3. **Search Engine Functionality** - Fast content-based search across files
+4. **File Management Insights** - Help users understand their file systems
+
+### **CRITICAL SAFETY PRINCIPLE**
+**FERRET NEVER DELETES OR MODIFIES FILES** - It is a read-only analysis tool that provides insights and reports without making any changes to the file system.
+
+### **Available CLI Commands**
+
+#### **1. Analyze Directory for Duplicates**
+```bash
+cargo run -- analyze <path>
+```
+**Purpose**: Scans directory for duplicate files using SHA-256 hashing
+**Output**: 
+- Total files found
+- Number of duplicate groups
+- Space wasted by duplicates
+- Detailed list of duplicate file sets
+
+**Example**:
+```bash
+cargo run -- analyze tests/test_data/duplicates
+# Returns: AnalysisResults with duplicate groups and space statistics
+```
+
+#### **2. Search File Contents**
+```bash
+cargo run -- search <query> <path> [--limit <number>]
+```
+**Purpose**: Search for text content within files using ripgrep integration
+**Output**: 
+- File paths containing the query
+- Line numbers where matches occur
+- Content snippets showing matches
+
+**Example**:
+```bash
+cargo run -- search "test" tests/test_data --limit 10
+# Returns: List of files with matching content and line numbers
+```
+
+#### **3. Index Directory**
+```bash
+cargo run -- index <path> [--index-path <output_path>]
+```
+**Purpose**: Create searchable index of directory contents
+**Output**: JSON-based index file for fast retrieval
+
+**Example**:
+```bash
+cargo run -- index tests/test_data --index-path ./my_index
+# Creates: ./my_index/ferret_index.json
+```
+
+### **Current Working Status**
+- ✅ **Duplicate Detection**: Fully functional with SHA-256 hashing
+- ✅ **Content Search**: Working with real file paths and content snippets
+- ✅ **File Discovery**: Intelligent filename grouping and normalization
+- ✅ **Basic Indexing**: JSON-based index creation
+- ⚠️ **Desktop GUI**: Structure complete but build blocked by icon issue
 
 pub struct FileAnalyzer {
     duplicate_detector: SmartDuplicateDetector,

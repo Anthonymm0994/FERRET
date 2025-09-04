@@ -6,33 +6,30 @@ This document tracks critical issues that need resolution to complete the implem
 
 ### 1. **Tauri Desktop Application Build Failure**
 **Status**: ❌ BLOCKING
-**Issue**: Tauri application fails to build due to missing icon file requirement
+**Issue**: Tauri application fails to build due to ICO format requirement
 ```
-`icons/icon.ico` not found; required for generating a Windows Resource file during tauri-build
+error RC2175 : resource file icon.ico is not in 3.00 format
 ```
 **Impact**: Desktop GUI cannot be built or tested
-**Solution Needed**: Create proper icon files or configure Tauri to not require them
+**Solution Needed**: Create proper ICO format icon file or find alternative approach
 
-### 2. **Search Engine Functionality Incomplete**
-**Status**: ❌ MAJOR
-**Issue**: Search functionality is not working as a proper search engine
-- Current implementation only does basic ripgrep searches
-- No indexing for fast search results
-- No search result ranking or relevance scoring
-- Missing content extraction for searchable text
+### 2. **Search Engine Functionality Needs Enhancement**
+**Status**: ⚠️ PARTIAL
+**Issue**: Basic search works but lacks advanced search engine features
+- ✅ **FIXED**: Search now returns real file paths (was "unknown")
+- ✅ **WORKING**: Content-based search with ripgrep integration
+- ❌ **MISSING**: Persistent indexing for fast retrieval
+- ❌ **MISSING**: Search result ranking and relevance scoring
+- ❌ **MISSING**: Document content extraction (PDF, DOCX, etc.)
 
-**Expected Behavior**: Should work like a desktop search engine with:
-- Indexed content for fast retrieval
-- Relevance scoring and ranking
-- Content previews and snippets
-- Search across file contents, not just filenames
+**Current Status**: Search functionality is working for text files but needs enhancement for full search engine capabilities
 
 ### 3. **Unused Code and Dead Dependencies**
 **Status**: ⚠️ TECHNICAL DEBT
-**Issue**: Large amount of unused code indicates incomplete implementation
-- 28+ compiler warnings for unused code
-- Many structs and methods never used (NetworkAwareIO, RetryManager, DocumentExtractor, etc.)
-- Suggests features are partially implemented but not integrated
+**Issue**: Significant amount of unused code indicates incomplete implementation
+- ✅ **IMPROVED**: Reduced from 28+ to 24 compiler warnings
+- ❌ **REMAINING**: Many structs and methods never used (NetworkAwareIO, RetryManager, DocumentExtractor, etc.)
+- ❌ **REMAINING**: Features are partially implemented but not integrated
 
 **Impact**: Code bloat, maintenance burden, unclear what's actually working
 
@@ -52,12 +49,6 @@ This document tracks critical issues that need resolution to complete the implem
 - Search can't find content inside documents
 - Limits search to plain text files only
 
-### 6. **Search Results Show "unknown" Paths**
-**Status**: ❌ MAJOR
-**Issue**: Search command returns results with `path: "unknown"` instead of actual file paths
-- Indicates broken integration between ripgrep and result processing
-- Makes search results unusable
-- Core search functionality is broken
 
 ### 7. **Missing Integration Between Components**
 **Status**: ❌ MAJOR
