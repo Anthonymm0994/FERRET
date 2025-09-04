@@ -2,36 +2,96 @@
 
 ## Project Overview
 
-FERRET (File Examination, Retrieval, and Redundancy Evaluation Tool) is a unified file analysis and knowledge base search platform that combines duplicate detection, file aging analysis, and powerful search capabilities into a single desktop application.
+FERRET (File Examination, Retrieval, and Redundancy Evaluation Tool) is a unified file analysis and knowledge base search platform that combines duplicate detection, file aging analysis, and powerful search capabilities into both a command-line interface and a modern desktop application built with Rust and Tauri.
 
 ## Core Architecture
 
 ### System Components
 
+#### Dual Interface Architecture
+FERRET provides two interfaces:
+1. **Command-Line Interface (CLI)**: Direct access to all functionality via `cargo run`
+2. **Desktop Application**: Modern GUI built with Tauri + React/TypeScript
+
+#### Core Platform Structure
+
 ```rust
-// Core platform structure
+// Core platform structure (shared between CLI and GUI)
 pub struct FerretPlatform {
-    // File analysis engine
-    analyzer: FileAnalyzer,
+    // File discovery and grouping
+    file_discovery: FileDiscovery,
+    
+    // Duplicate detection engine
+    duplicate_detector: SmartDuplicateDetector,
     
     // Search engine (ripgrep-based)
     search_engine: RipgrepSearchEngine,
     
-    // File processor with retry mechanism
-    processor: FileProcessor,
-    
-    // Tool integrations
-    tool_integrations: ToolIntegrations,
-    
-    // Network-aware processing
-    network_processor: NetworkAwareProcessor,
-    
-    // Shared state management
-    state: Arc<RwLock<PlatformState>>,
-    
-    // Configuration
-    config: Config,
+    // Retry mechanism for locked files
+    retry_manager: RetryManager,
 }
+```
+
+#### Desktop Application Structure
+
+```rust
+// Tauri application structure
+pub struct TauriApp {
+    // Tauri commands for frontend communication
+    commands: TauriCommands,
+    
+    // Shared FERRET platform instance
+    platform: FerretPlatform,
+}
+
+// Tauri command handlers
+#[tauri::command]
+pub async fn analyze_directory(path: String) -> Result<AnalysisResults, String>
+
+#[tauri::command]
+pub async fn search_files(query: String, path: String, limit: usize) -> Result<Vec<SearchResult>, String>
+
+#[tauri::command]
+pub async fn index_directory(path: String, index_path: Option<String>) -> Result<String, String>
+```
+
+#### Frontend Architecture (React/TypeScript)
+
+```typescript
+// Main application component
+interface App {
+  // State management
+  selectedPath: string;
+  analysisResults: AnalysisResults | null;
+  searchResults: SearchResult[];
+  
+  // UI components
+  DirectorySection: React.FC;
+  AnalysisResults: React.FC;
+  SearchSection: React.FC;
+}
+
+// Tauri API integration
+import { invoke } from '@tauri-apps/api/tauri';
+import { open } from '@tauri-apps/api/dialog';
+```
+
+## Implementation Status
+
+### ✅ Completed Components
+
+1. **Core Rust Backend**: Complete implementation with working duplicate detection
+2. **CLI Interface**: Full command-line functionality with proper error handling
+3. **Tauri Desktop App**: Modern GUI with React frontend
+4. **File Discovery**: Intelligent filename grouping and normalization
+5. **Duplicate Detection**: SHA-256 hashing with exact duplicate identification
+6. **Search Engine**: ripgrep integration for content searching
+7. **Index Management**: JSON-based indexing system
+8. **Error Handling**: Comprehensive error management and graceful failures
+
+### 🔄 Current Implementation
+
+The system is **fully functional** with both CLI and desktop interfaces working correctly.
 
 pub struct FileAnalyzer {
     duplicate_detector: SmartDuplicateDetector,
