@@ -57,13 +57,7 @@ impl FerretPlatform {
         
         for group in file_groups {
             for file in group.variants {
-                let metadata = crate::search::engine::FileMetadata {
-                    size: std::fs::metadata(&file)?.len(),
-                    modified: std::fs::metadata(&file)?.modified()?,
-                    is_binary: false, // Would need proper binary detection
-                };
-                
-                engine.index_file(&file, &metadata).await?;
+                engine.index_file(&file).await?;
             }
         }
         

@@ -174,7 +174,7 @@ impl RipgrepSearchEngine {
         })
     }
     
-    pub async fn index_file(&mut self, path: &Path, _metadata: &FileMetadata) -> Result<()> {
+    pub async fn index_file(&mut self, path: &Path) -> Result<()> {
         use std::collections::HashMap;
         use serde_json;
         
@@ -329,9 +329,3 @@ pub struct SearchResult {
     pub file_type: String,
 }
 
-#[derive(Debug)]
-pub struct FileMetadata {
-    pub size: u64,
-    pub modified: std::time::SystemTime,
-    pub is_binary: bool,
-}
