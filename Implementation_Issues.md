@@ -52,18 +52,87 @@ This document tracks critical issues that need resolution to complete the implem
 - Search can't find content inside documents
 - Limits search to plain text files only
 
-## Questions for Resolution
+### 6. **Search Results Show "unknown" Paths**
+**Status**: ❌ MAJOR
+**Issue**: Search command returns results with `path: "unknown"` instead of actual file paths
+- Indicates broken integration between ripgrep and result processing
+- Makes search results unusable
+- Core search functionality is broken
 
-1. **Icon Requirements**: Should we create proper icon files for Tauri or disable the requirement?
-2. **Search Engine Scope**: What level of search engine functionality is expected? (basic file search vs. full desktop search engine)
-3. **Dead Code**: Should unused code be removed or are these features planned for future implementation?
-4. **Indexing Strategy**: Should we implement persistent indexing or keep the current JSON-based approach?
-5. **Document Processing**: Should document extraction be integrated into the search functionality?
+### 7. **Missing Integration Between Components**
+**Status**: ❌ MAJOR
+**Issue**: Components exist in isolation but don't work together
+- DocumentExtractor exists but not used in search
+- NetworkAwareIO exists but not used in duplicate detection
+- RetryManager exists but not used for locked files
+- Architecture shows integration but implementation is fragmented
+
+## Direct Questions Requiring Immediate Answers
+
+**CRITICAL DECISIONS NEEDED:**
+
+1. **Tauri Icon Issue**: 
+   - Option A: Create proper 256x256 PNG icon and convert to ICO
+   - Option B: Disable icon requirement in Tauri config
+   - Option C: Use placeholder icon file
+   - **DECISION REQUIRED**: Which approach should be taken?
+
+2. **Search Engine Architecture**:
+   - Current: Basic ripgrep with broken path resolution
+   - Option A: Fix current ripgrep integration and add indexing
+   - Option B: Implement full Tantivy-based search engine as originally planned
+   - Option C: Hybrid approach with ripgrep + simple indexing
+   - **DECISION REQUIRED**: Which search architecture should be implemented?
+
+3. **Dead Code Strategy**:
+   - Current: 28+ warnings for unused code
+   - Option A: Remove all unused code immediately
+   - Option B: Integrate unused features into working system
+   - Option C: Keep unused code for future implementation
+   - **DECISION REQUIRED**: What should be done with unused code?
+
+4. **Document Processing Integration**:
+   - Current: DocumentExtractor exists but unused
+   - Option A: Integrate document extraction into search functionality
+   - Option B: Remove document extraction entirely
+   - Option C: Keep as separate feature for future use
+   - **DECISION REQUIRED**: Should document extraction be integrated into search?
+
+5. **Search Result Path Issue**:
+   - Current: Search returns "unknown" paths
+   - **IMMEDIATE FIX REQUIRED**: How should ripgrep results be properly integrated to show actual file paths?
+
+**TECHNICAL IMPLEMENTATION QUESTIONS:**
+
+6. **Indexing Strategy**: Should we implement persistent Tantivy indexing or keep simple JSON-based approach?
+
+7. **Error Handling**: Should locked file retry mechanism be integrated into file processing?
+
+8. **Network Awareness**: Should network-aware I/O be integrated into file operations?
+
+**PRIORITY ORDER NEEDED**: Which issues should be fixed first to get a working system?
+
+## Current Working State
+
+**✅ What Actually Works:**
+- CLI duplicate detection (SHA-256 hashing)
+- File discovery and grouping
+- Basic CLI interface with proper error handling
+- Test data generation and CLI testing
+
+**❌ What's Broken:**
+- Tauri desktop application (won't build)
+- Search functionality (returns "unknown" paths)
+- Document extraction (exists but unused)
+- Component integration (fragmented architecture)
 
 ## Next Steps
 
-1. Fix Tauri build issue to enable desktop application testing
-2. Define search engine requirements and implement accordingly  
-3. Clean up unused code or integrate missing features
-4. Test complete workflow from indexing to searching
-5. Verify desktop application functionality
+**IMMEDIATE ACTIONS REQUIRED:**
+1. **Fix search path issue** - Make search results show actual file paths
+2. **Resolve Tauri build failure** - Get desktop app building
+3. **Make architectural decisions** - Choose search engine approach and dead code strategy
+4. **Integrate components** - Connect existing pieces into working system
+5. **Test complete workflow** - Verify end-to-end functionality
+
+**The system is partially working but needs critical fixes to be functional as a search engine.**
