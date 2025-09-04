@@ -1,9 +1,9 @@
-use std::path::{Path, PathBuf};
+use std::path::Path;
 use anyhow::Result;
 use futures::future::join_all;
 use std::sync::Arc;
 
-use crate::file_discovery::{FileDiscovery, FileGroup};
+use crate::file_discovery::FileDiscovery;
 use crate::analysis::duplicates::{SmartDuplicateDetector, DuplicateResults};
 use crate::search::engine::{RipgrepSearchEngine, SearchResult};
 use crate::retry::RetryManager;

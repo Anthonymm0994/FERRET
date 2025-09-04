@@ -4,7 +4,6 @@ use std::process::Command;
 use anyhow::Result;
 use fuzzy_matcher::skim::SkimMatcherV2;
 use fuzzy_matcher::FuzzyMatcher;
-use regex::Regex;
 
 pub struct FileDiscovery {
     grouper: SmartGrouper,

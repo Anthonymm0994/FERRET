@@ -1,5 +1,4 @@
 use std::path::{Path, PathBuf};
-use std::sync::{Arc, Mutex};
 use anyhow::Result;
 // use tantivy::{
 //     collector::TopDocs,
@@ -9,7 +8,6 @@ use anyhow::Result;
 //     Index, IndexReader, IndexWriter, ReloadPolicy, Term,
 // };
 use grep_regex::RegexMatcher;
-use grep_searcher::{Searcher, SearcherBuilder, Sink, SinkMatch};
 use ignore::WalkBuilder;
 
 pub struct RipgrepSearchEngine {
