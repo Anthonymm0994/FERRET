@@ -15,6 +15,7 @@ use ignore::WalkBuilder;
 pub struct RipgrepSearchEngine {
     // Temporarily simplified without tantivy
     document_extractor: crate::extraction::document::DocumentExtractor,
+    index_path: std::path::PathBuf,
 }
 
 pub struct RipgrepIntegration;
@@ -90,16 +91,44 @@ impl Sink for SearchSink {
 }
 
 impl RipgrepSearchEngine {
-    pub fn new(_index_path: &Path) -> Result<Self> {
+    pub fn new(index_path: &Path) -> Result<Self> {
         // Temporarily simplified without tantivy
         Ok(Self {
             document_extractor: crate::extraction::document::DocumentExtractor::new(),
+            index_path: index_path.to_path_buf(),
         })
     }
     
-    pub async fn index_file(&mut self, _path: &Path, _metadata: &FileMetadata) -> Result<()> {
-        // Temporarily simplified - just log that indexing is not available
-        log::info!("Indexing temporarily disabled - tantivy not available");
+    pub async fn index_file(&mut self, path: &Path, _metadata: &FileMetadata) -> Result<()> {
+        // Simple file-based index implementation
+        use std::collections::HashMap;
+        use serde_json;
+        
+        // Create index directory if it doesn't exist
+        std::fs::create_dir_all(&self.index_path)?;
+        
+        // Read file content for indexing
+        let content = match tokio::fs::read_to_string(path).await {
+            Ok(content) => content,
+            Err(_) => return Ok(()), // Skip binary files or files that can't be read
+        };
+        
+        // Store in a simple JSON index file
+        let index_file = self.index_path.join("ferret_index.json");
+        let mut index: HashMap<String, String> = if index_file.exists() {
+            let data = tokio::fs::read_to_string(&index_file).await?;
+            serde_json::from_str(&data).unwrap_or_default()
+        } else {
+            HashMap::new()
+        };
+        
+        // Add file to index
+        index.insert(path.to_string_lossy().to_string(), content);
+        
+        // Write back to index file
+        let json = serde_json::to_string_pretty(&index)?;
+        tokio::fs::write(&index_file, json).await?;
+        
         Ok(())
     }
     

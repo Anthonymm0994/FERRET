@@ -1,0 +1,11 @@
+{
+  "tests/test_data/similar_files\\app.log": "This is a log file\n",
+  "tests/test_data/similar_files\\report_draft.txt": "Monthly Report Draft\r\nThis is a draft of the monthly report.\r\nIt contains preliminary data and analysis.\r\n",
+  "tests/test_data/similar_files\\README.md": "This is a markdown file\n",
+  "tests/test_data/similar_files\\document_v2.txt": "Project Proposal v2\r\nThis is the second version of our project proposal.\r\nIt contains updated ideas and refined concepts.\r\nThe structure is similar but content is improved.\r\n",
+  "tests/test_data/similar_files\\config.ini": "This is a config file\n",
+  "tests/test_data/similar_files\\report_final.txt": "Monthly Report Final\r\nThis is the final version of the monthly report.\r\nIt contains complete data and final analysis.\r\nAll sections have been reviewed and approved.\r\n",
+  "tests/test_data/similar_files\\document_final.txt": "Project Proposal Final\r\nThis is the final version of our project proposal.\r\nIt contains the complete ideas and final concepts.\r\nThe structure is similar but content is fully developed.\r\nThis is the version we will submit.\r\n",
+  "tests/test_data/similar_files\\document_v1.txt": "Project Proposal v1\r\nThis is the first version of our project proposal.\r\nIt contains initial ideas and concepts.\r\n",
+  "tests/test_data/similar_files\\README.txt": "This is a text file\n"
+}
