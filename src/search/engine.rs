@@ -22,8 +22,9 @@ impl RipgrepIntegration {
         use grep_searcher::sinks::UTF8;
         
         let matcher = RegexMatcher::new(pattern)?;
-        let mut results = Vec::new();
+        let mut file_results: std::collections::HashMap<PathBuf, Vec<(u64, String)>> = std::collections::HashMap::new();
         
+        // First pass: collect all matches per file
         for entry in WalkBuilder::new(path).build() {
             let entry = entry?;
             if !entry.file_type().map_or(false, |ft| ft.is_file()) {
@@ -33,24 +34,108 @@ impl RipgrepIntegration {
             let file_path = entry.path();
             let mut searcher = SearcherBuilder::new().build();
             
-            // Use grep's sink with PROPER path handling
             searcher.search_path(
                 &matcher,
                 file_path,
                 UTF8(|line_num, line| {
-                    results.push(SearchResult {
-                        path: file_path.to_path_buf(), // THIS WAS THE BUG - use actual path!
-                        line_number: Some(line_num as u64),
-                        snippet: line.to_string(),
-                        score: 1.0,
-                        content: Some(line.to_string()),
-                    });
+                    file_results.entry(file_path.to_path_buf())
+                        .or_insert_with(Vec::new)
+                        .push((line_num as u64, line.to_string()));
                     Ok(true)
                 })
             )?;
         }
         
+        // Second pass: create rich search results with context
+        let mut results = Vec::new();
+        for (file_path, matches) in file_results {
+            if let Ok(file_content) = std::fs::read_to_string(&file_path) {
+                let lines: Vec<&str> = file_content.lines().collect();
+                let file_size = std::fs::metadata(&file_path).map(|m| m.len()).unwrap_or(0);
+                let file_type = file_path.extension()
+                    .and_then(|s| s.to_str())
+                    .unwrap_or("unknown")
+                    .to_string();
+                let match_count = matches.len();
+                
+                // Group nearby matches to avoid duplicate results
+                let mut processed_lines = std::collections::HashSet::new();
+                
+                for (line_num, line_content) in &matches {
+                    if processed_lines.contains(line_num) {
+                        continue;
+                    }
+                    
+                    // Calculate context (3 lines before and after)
+                    let context_before: Vec<String> = lines
+                        .iter()
+                        .skip((line_num.saturating_sub(4)) as usize)
+                        .take(3)
+                        .map(|s| s.to_string())
+                        .collect();
+                    
+                    let context_after: Vec<String> = lines
+                        .iter()
+                        .skip((line_num + 1) as usize)
+                        .take(3)
+                        .map(|s| s.to_string())
+                        .collect();
+                    
+                    // Calculate relevance score
+                    let score = self.calculate_relevance_score(line_content, pattern, &file_path);
+                    
+                    // Mark nearby lines as processed to avoid duplicates
+                    for i in line_num.saturating_sub(2)..=line_num + 2 {
+                        processed_lines.insert(i);
+                    }
+                    
+                    results.push(SearchResult {
+                        path: file_path.clone(),
+                        score,
+                        snippet: line_content.clone(),
+                        line_number: Some(*line_num),
+                        content: Some(line_content.clone()),
+                        context_before,
+                        context_after,
+                        match_count,
+                        file_size,
+                        file_type: file_type.clone(),
+                    });
+                }
+            }
+        }
+        
+        // Sort by relevance score (highest first)
+        results.sort_by(|a, b| b.score.partial_cmp(&a.score).unwrap_or(std::cmp::Ordering::Equal));
+        
         Ok(results)
+    }
+    
+    fn calculate_relevance_score(&self, line: &str, pattern: &str, file_path: &Path) -> f32 {
+        let mut score = 1.0;
+        
+        // Boost score for exact matches
+        if line.to_lowercase().contains(&pattern.to_lowercase()) {
+            score += 2.0;
+        }
+        
+        // Boost score for multiple occurrences in the line
+        let occurrences = line.to_lowercase().matches(&pattern.to_lowercase()).count();
+        score += occurrences as f32 * 0.5;
+        
+        // Boost score for filename matches
+        if let Some(filename) = file_path.file_name().and_then(|n| n.to_str()) {
+            if filename.to_lowercase().contains(&pattern.to_lowercase()) {
+                score += 1.5;
+            }
+        }
+        
+        // Boost score for shorter lines (more precise matches)
+        if line.len() < 100 {
+            score += 0.5;
+        }
+        
+        score
     }
 }
 
@@ -114,6 +199,11 @@ pub struct SearchResult {
     pub snippet: String,
     pub line_number: Option<u64>,
     pub content: Option<String>,
+    pub context_before: Vec<String>,
+    pub context_after: Vec<String>,
+    pub match_count: usize,
+    pub file_size: u64,
+    pub file_type: String,
 }
 
 #[derive(Debug)]

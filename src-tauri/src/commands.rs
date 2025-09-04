@@ -1,6 +1,5 @@
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
-use tauri::State;
 use ferret::platform::FerretPlatform;
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -100,7 +99,7 @@ pub async fn search_files(
     let search_results = results.into_iter().map(|result| {
         SearchResult {
             path: result.path.to_string_lossy().to_string(),
-            line_number: result.line_number,
+            line_number: result.line_number.map(|n| n as usize),
             snippet: result.snippet,
         }
     }).collect();

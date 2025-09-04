@@ -91,12 +91,37 @@ async fn main() -> Result<()> {
             let mut platform = FerretPlatform::new()?;
             let results = platform.search(&query, &path, limit).await?;
             
-            for result in results {
-                println!("{}:{} - {}", 
+            for (i, result) in results.iter().enumerate() {
+                if i > 0 {
+                    println!(); // Add spacing between results
+                }
+                
+                // Header with file info
+                println!("🔍 {} (Score: {:.1}, {} matches, {} bytes, .{})", 
                     result.path.display(), 
-                    result.line_number.unwrap_or(0),
-                    result.snippet
+                    result.score,
+                    result.match_count,
+                    result.file_size,
+                    result.file_type
                 );
+                
+                // Context before
+                for (j, context_line) in result.context_before.iter().enumerate() {
+                    let base_line = result.line_number.unwrap_or(0);
+                    let line_num = base_line.saturating_sub((result.context_before.len() - j) as u64);
+                    println!("  {:3} │ {}", line_num, context_line);
+                }
+                
+                // Main match line (highlighted)
+                if let Some(line_num) = result.line_number {
+                    println!("  {:3} │ {} ← MATCH", line_num, result.snippet);
+                }
+                
+                // Context after
+                for (j, context_line) in result.context_after.iter().enumerate() {
+                    let line_num = result.line_number.unwrap_or(0) + (j + 1) as u64;
+                    println!("  {:3} │ {}", line_num, context_line);
+                }
             }
         }
         Commands::Index { path, index_path } => {
