@@ -120,18 +120,18 @@ This document tracks critical issues that need resolution to complete the implem
 - Test data generation and CLI testing
 
 **❌ What's Broken:**
-- Tauri desktop application (won't build)
-- Search functionality (returns "unknown" paths)
+- Tauri desktop application (build failure due to ICO requirement)
+- Many unused components and dead code (18 warnings remaining)
 - Document extraction (exists but unused)
 - Component integration (fragmented architecture)
 
 ## Next Steps
 
 **IMMEDIATE ACTIONS REQUIRED:**
-1. **Fix search path issue** - Make search results show actual file paths
-2. **Resolve Tauri build failure** - Get desktop app building
-3. **Make architectural decisions** - Choose search engine approach and dead code strategy
-4. **Integrate components** - Connect existing pieces into working system
-5. **Test complete workflow** - Verify end-to-end functionality
+1. ✅ **Fix search path issue** - Search now returns real file paths with line numbers
+2. ❌ **Resolve Tauri build failure** - Still blocked by ICO format requirement
+3. ⚠️ **Make architectural decisions** - Partially completed (reduced warnings from 24 to 18)
+4. ⚠️ **Integrate components** - Core CLI functionality working, but unused components remain
+5. ✅ **Test complete workflow** - CLI analyze, search, and index commands all working
 
-**The system is partially working but needs critical fixes to be functional as a search engine.**
+**The system is now functional as a CLI tool with working duplicate detection, search, and indexing. Desktop GUI still blocked by Tauri build issue.**
