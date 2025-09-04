@@ -77,13 +77,25 @@ impl SmartGrouper {
             .and_then(|s| s.to_str())
             .unwrap_or("");
         
-        // Use statistical approach to identify stable segments
-        let segments = self.tokenize_filename(stem);
-        let stable_segments = segments.iter()
-            .filter(|s| self.calculate_entropy(s) < 0.5) // Low entropy = stable
-            .collect::<Vec<_>>();
+        // For now, use a simpler approach that keeps more of the filename
+        // Remove common suffixes like numbers, but keep the base name
+        let normalized = stem
+            .to_lowercase()
+            .replace("_", " ")
+            .replace("-", " ");
         
-        stable_segments.iter().map(|s| s.as_str()).collect::<Vec<_>>().join("_").to_lowercase()
+        // Remove trailing numbers and common patterns
+        let cleaned = regex::Regex::new(r"\s*(v\d+|copy|backup|final|draft|\d+)$")
+            .unwrap()
+            .replace(&normalized, "")
+            .trim()
+            .to_string();
+        
+        if cleaned.is_empty() {
+            stem.to_lowercase()
+        } else {
+            cleaned
+        }
     }
     
     fn tokenize_filename(&self, filename: &str) -> Vec<String> {
