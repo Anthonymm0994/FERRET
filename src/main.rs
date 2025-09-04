@@ -88,6 +88,15 @@ async fn main() -> Result<()> {
             }
             
             let mut platform = FerretPlatform::new()?;
+            
+            // Check if there's an index in the current directory
+            let index_path = std::path::Path::new("./ferret_index");
+            if index_path.exists() {
+                // Load the existing index
+                let engine = crate::search::engine::RipgrepSearchEngine::new(index_path)?;
+                platform.set_search_engine(engine);
+            }
+            
             let results = platform.search(&query, &path, limit).await?;
             
             for (i, result) in results.iter().enumerate() {

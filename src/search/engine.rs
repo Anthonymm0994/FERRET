@@ -118,18 +118,17 @@ impl RipgrepIntegration {
                     processed_lines.insert(i);
                 }
                 
-                results.push(SearchResult {
-                    path: file_path.clone(),
-                    score,
-                    snippet: line_content.clone(),
-                    line_number: Some(*line_num),
-                    content: Some(line_content.clone()),
-                    context_before,
-                    context_after,
-                    match_count,
-                    file_size,
-                    file_type: file_type.clone(),
-                });
+                                    results.push(SearchResult {
+                        path: file_path.clone(),
+                        score,
+                        snippet: line_content.clone(),
+                        line_number: Some(*line_num),
+                        context_before,
+                        context_after,
+                        match_count,
+                        file_size,
+                        file_type: file_type.clone(),
+                    });
             }
         }
         
@@ -176,17 +175,17 @@ impl RipgrepSearchEngine {
     }
     
     pub async fn index_file(&mut self, path: &Path, _metadata: &FileMetadata) -> Result<()> {
-        // Simple file-based index implementation
         use std::collections::HashMap;
         use serde_json;
         
         // Create index directory if it doesn't exist
         std::fs::create_dir_all(&self.index_path)?;
         
-        // Read file content for indexing
-        let content = match tokio::fs::read_to_string(path).await {
+        // Extract content using DocumentExtractor
+        let extractor = DocumentExtractor::new();
+        let content = match extractor.extract_content(path).await {
             Ok(content) => content,
-            Err(_) => return Ok(()), // Skip binary files or files that can't be read
+            Err(_) => return Ok(()), // Skip files that can't be processed
         };
         
         // Store in a simple JSON index file
@@ -208,14 +207,111 @@ impl RipgrepSearchEngine {
         Ok(())
     }
     
-    pub fn search(&self, _query_str: &str, _limit: usize) -> Result<Vec<SearchResult>> {
-        // Temporarily simplified - return empty results
-        log::info!("Search temporarily disabled - tantivy not available");
-        Ok(Vec::new())
+    pub async fn search(&self, query_str: &str, limit: usize) -> Result<Vec<SearchResult>> {
+        use std::collections::HashMap;
+        use serde_json;
+        
+        let index_file = self.index_path.join("ferret_index.json");
+        if !index_file.exists() {
+            return Ok(Vec::new());
+        }
+        
+        // Load index
+        let data = tokio::fs::read_to_string(&index_file).await?;
+        let index: HashMap<String, String> = serde_json::from_str(&data)?;
+        
+        let mut results = Vec::new();
+        let query_lower = query_str.to_lowercase();
+        
+        for (file_path_str, content) in index {
+            let file_path = std::path::PathBuf::from(&file_path_str);
+            let lines: Vec<&str> = content.lines().collect();
+            let mut matches = Vec::new();
+            
+            // Search in content
+            for (line_num, line) in lines.iter().enumerate() {
+                if line.to_lowercase().contains(&query_lower) {
+                    matches.push((line_num as u64 + 1, line.to_string()));
+                }
+            }
+            
+            if !matches.is_empty() {
+                let file_size = std::fs::metadata(&file_path).map(|m| m.len()).unwrap_or(0);
+                let file_type = file_path.extension()
+                    .and_then(|s| s.to_str())
+                    .unwrap_or("unknown")
+                    .to_string();
+                let match_count = matches.len();
+                
+                // Create search results for each match
+                for (line_num, line_content) in matches {
+                    let context_before: Vec<String> = lines
+                        .iter()
+                        .skip((line_num.saturating_sub(4)) as usize)
+                        .take(3)
+                        .map(|s| s.to_string())
+                        .collect();
+                    
+                    let context_after: Vec<String> = lines
+                        .iter()
+                        .skip((line_num + 1) as usize)
+                        .take(3)
+                        .map(|s| s.to_string())
+                        .collect();
+                    
+                    let score = self.calculate_relevance_score(&line_content, query_str, &file_path);
+                    
+                    results.push(SearchResult {
+                        path: file_path.clone(),
+                        score,
+                        snippet: line_content.clone(),
+                        line_number: Some(line_num),
+                        context_before,
+                        context_after,
+                        match_count,
+                        file_size,
+                        file_type: file_type.clone(),
+                    });
+                }
+            }
+        }
+        
+        // Sort by relevance score and apply limit
+        results.sort_by(|a, b| b.score.partial_cmp(&a.score).unwrap_or(std::cmp::Ordering::Equal));
+        results.truncate(limit);
+        
+        Ok(results)
+    }
+    
+    fn calculate_relevance_score(&self, line: &str, pattern: &str, file_path: &std::path::Path) -> f32 {
+        let mut score = 1.0;
+        
+        // Boost score for exact matches
+        if line.to_lowercase().contains(&pattern.to_lowercase()) {
+            score += 2.0;
+        }
+        
+        // Boost score for multiple occurrences in the line
+        let occurrences = line.to_lowercase().matches(&pattern.to_lowercase()).count();
+        score += occurrences as f32 * 0.5;
+        
+        // Boost score for filename matches
+        if let Some(filename) = file_path.file_name().and_then(|n| n.to_str()) {
+            if filename.to_lowercase().contains(&pattern.to_lowercase()) {
+                score += 1.5;
+            }
+        }
+        
+        // Boost score for shorter lines (more precise matches)
+        if line.len() < 100 {
+            score += 0.5;
+        }
+        
+        score
     }
     
     pub fn commit(&mut self) -> Result<()> {
-        // Temporarily simplified
+        // Index is automatically committed on each file addition
         Ok(())
     }
 }
@@ -226,7 +322,6 @@ pub struct SearchResult {
     pub score: f32,
     pub snippet: String,
     pub line_number: Option<u64>,
-    pub content: Option<String>,
     pub context_before: Vec<String>,
     pub context_after: Vec<String>,
     pub match_count: usize,

@@ -20,6 +20,10 @@ impl FerretPlatform {
         })
     }
     
+    pub fn set_search_engine(&mut self, engine: RipgrepSearchEngine) {
+        self.search_engine = Some(engine);
+    }
+    
     pub async fn analyze_directory(&mut self, path: &Path) -> Result<AnalysisResults> {
         let file_groups = self.file_discovery.discover_files(path).await?;
         let duplicate_results = self.duplicate_detector.detect_duplicates(&file_groups).await?;
@@ -33,7 +37,7 @@ impl FerretPlatform {
     
     pub async fn search(&mut self, query: &str, path: &Path, limit: usize) -> Result<Vec<SearchResult>> {
         if let Some(ref engine) = self.search_engine {
-            engine.search(query, limit)
+            engine.search(query, limit).await
         } else {
             // Fallback to ripgrep integration
             let integration = crate::search::engine::RipgrepIntegration;
