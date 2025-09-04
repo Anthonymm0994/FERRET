@@ -97,31 +97,6 @@ impl SmartGrouper {
         }
     }
     
-    fn tokenize_filename(&self, filename: &str) -> Vec<String> {
-        // Split on common separators and extract meaningful tokens
-        regex::Regex::new(r"[-_\s]+")
-            .unwrap()
-            .split(filename)
-            .map(|s| s.to_string())
-            .filter(|s| !s.is_empty())
-            .collect()
-    }
-    
-    fn calculate_entropy(&self, segment: &str) -> f64 {
-        // Calculate Shannon entropy to identify variable vs stable segments
-        let mut counts = std::collections::HashMap::new();
-        for ch in segment.chars() {
-            *counts.entry(ch).or_insert(0) += 1;
-        }
-        
-        let len = segment.len() as f64;
-        counts.values()
-            .map(|&count| {
-                let p = count as f64 / len;
-                -p * p.log2()
-            })
-            .sum()
-    }
 }
 
 pub struct FdIntegration;
@@ -207,13 +182,6 @@ pub struct FileGroup {
 }
 
 impl FileGroup {
-    pub fn get_potential_duplicates(&self) -> Vec<&PathBuf> {
-        if self.variants.len() > 1 {
-            self.variants.iter().collect()
-        } else {
-            Vec::new()
-        }
-    }
     
     pub fn is_potential_duplicate(&self) -> bool {
         self.variants.len() > 1

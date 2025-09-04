@@ -3,20 +3,13 @@ use std::path::{Path, PathBuf};
 use sha2::{Sha256, Digest};
 use anyhow::Result;
 use tokio::io::AsyncReadExt;
-use crate::io::network_aware::NetworkAwareIO;
 use crate::file_discovery::FileGroup;
 
-pub struct SmartDuplicateDetector {
-    io_adapter: NetworkAwareIO,
-    fuzzy_threshold: f32,
-}
+pub struct SmartDuplicateDetector;
 
 impl SmartDuplicateDetector {
     pub fn new() -> Self {
-        Self {
-            io_adapter: NetworkAwareIO::default(),
-            fuzzy_threshold: 0.8, // 80% similarity threshold
-        }
+        Self
     }
     
     pub async fn detect_duplicates(&self, file_groups: &[FileGroup]) -> Result<DuplicateResults> {
@@ -83,16 +76,6 @@ impl SmartDuplicateDetector {
         }
         
         Ok(format!("{:x}", hasher.finalize()))
-    }
-    
-    // Legacy method for compatibility - now calls the new implementation
-    pub async fn analyze_group(&self, group: &FileGroup) -> Result<DuplicateGroup> {
-        let duplicate_sets = self.find_exact_duplicates_in_group(group).await?;
-        
-        Ok(DuplicateGroup {
-            base_name: group.canonical_name.clone(),
-            duplicate_sets,
-        })
     }
 }
 

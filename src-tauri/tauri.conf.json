@@ -40,8 +40,7 @@
     "bundle": {
       "active": false,
       "targets": "all",
-      "identifier": "com.ferret.app",
-      "icon": []
+      "identifier": "com.ferret.app"
     },
     "security": {
       "csp": null

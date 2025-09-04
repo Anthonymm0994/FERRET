@@ -11,8 +11,6 @@ use grep_regex::RegexMatcher;
 use ignore::WalkBuilder;
 
 pub struct RipgrepSearchEngine {
-    // Temporarily simplified without tantivy
-    document_extractor: crate::extraction::document::DocumentExtractor,
     index_path: std::path::PathBuf,
 }
 
@@ -59,9 +57,7 @@ impl RipgrepIntegration {
 
 impl RipgrepSearchEngine {
     pub fn new(index_path: &Path) -> Result<Self> {
-        // Temporarily simplified without tantivy
         Ok(Self {
-            document_extractor: crate::extraction::document::DocumentExtractor::new(),
             index_path: index_path.to_path_buf(),
         })
     }
